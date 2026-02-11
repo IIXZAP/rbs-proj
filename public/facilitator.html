@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Facilitator Dashboard</title>
+  <style>
+    body{font-family:system-ui;margin:16px;}
+    .row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+    .card{border:1px solid #ddd;border-radius:12px;padding:12px;min-width:260px}
+    h2,h3{margin:0 0 8px 0}
+    .big{font-size:20px;font-weight:700}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#f2f2f2;margin-right:6px}
+    table{border-collapse:collapse;width:100%;}
+    td,th{border:1px solid #eee;padding:6px;font-size:14px;vertical-align:top}
+    button{padding:8px 10px;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer;margin:4px 4px 0 0}
+    .event{background:#fff7e6;border:1px solid #ffd27d}
+  </style>
+</head>
+<body>
+  <div class="big">Idea-to-Market: Create Your Blue Ocean — Facilitator</div>
+  <div id="meta"></div>
+
+  <div class="row">
+    <div class="card">
+      <h3>Controls</h3>
+      <div>
+        <button onclick="setPhase('A')">Phase A</button>
+        <button onclick="setPhase('B')">Phase B</button>
+        <button onclick="setPhase('C')">Phase C</button>
+        <button onclick="setPhase('D')">Phase D</button>
+        <button onclick="setPhase('END')">END</button>
+      </div>
+      <div style="margin-top:8px">
+        <button onclick="draw('customer')">🎴 Random Customer/Pain</button>
+        <button onclick="draw('event')">⚡ Draw Event</button>
+        <button onclick="nextRound()">➡️ Next Round</button>
+      </div>
+    </div>
+
+    <div class="card event">
+      <h3>Event</h3>
+      <div id="eventText">—</div>
+    </div>
+
+    <div class="card">
+      <h3>Quick Score Adjust</h3>
+      <div>
+        Team ID <input id="tid" type="number" min="1" max="12" style="width:60px">
+        ❤️ <input id="dv" type="number" value="0" style="width:60px">
+        ⚔️ <input id="dc" type="number" value="0" style="width:60px">
+        💡 <input id="dd" type="number" value="0" style="width:60px">
+        <button onclick="adjust()">Apply</button>
+      </div>
+      <small>ใช้ตอนให้โบนัส/หักคะแนนเร็ว ๆ</small>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Scoreboard (Active Teams)</h3>
+    <div id="board"></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Live Submissions (Active Teams)</h3>
+    <div id="subs"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let STATE = null;
+
+    socket.on("state", (s) => {
+      STATE = s;
+      document.getElementById("meta").innerHTML =
+        `<span class="pill">GameCode: ${s.gameCode}</span>
+         <span class="pill">Round: ${s.currentRound}</span>
+         <span class="pill">Active: ${s.activeTeams.join(", ")}</span>
+         <span class="pill">Phase: ${s.phase}</span>`;
+      document.getElementById("eventText").textContent = s.eventText || "—";
+      renderBoard();
+      renderSubs();
+    });
+
+    function setPhase(phase){ socket.emit("facilitator:setPhase", { phase }); }
+    function nextRound(){ socket.emit("facilitator:nextRound"); }
+    function draw(type){ socket.emit("facilitator:drawRandom", { type }); }
+    function adjust(){
+      socket.emit("facilitator:adjustScore", {
+        teamId: Number(document.getElementById("tid").value),
+        deltaValue: Number(document.getElementById("dv").value),
+        deltaComp: Number(document.getElementById("dc").value),
+        deltaDiff: Number(document.getElementById("dd").value),
+      });
+    }
+
+    function renderBoard(){
+      const active = new Set(STATE.activeTeams);
+      const rows = STATE.teams.filter(t=>active.has(t.id)).map(t => `
+        <tr>
+          <td><b>${t.name}</b><br/>#${t.id}</td>
+          <td>❤️ ${t.value}</td>
+          <td>⚔️ ${t.competition}</td>
+          <td>💡 ${t.diff}</td>
+        </tr>
+      `).join("");
+      document.getElementById("board").innerHTML =
+        `<table>
+          <tr><th>Team</th><th>Value</th><th>Competition</th><th>Differentiation</th></tr>
+          ${rows}
+        </table>`;
+    }
+
+    function renderSubs(){
+      const active = new Set(STATE.activeTeams);
+      const cards = STATE.teams.filter(t=>active.has(t.id)).map(t => `
+        <div style="border:1px solid #eee;border-radius:12px;padding:10px;margin:8px 0">
+          <b>${t.name} (#${t.id})</b><br/>
+          <div><b>Customer:</b> ${escapeHtml(t.customer)}</div>
+          <div><b>Pain:</b> ${escapeHtml(t.pain)}</div>
+          <div><b>We help:</b> ${escapeHtml(t.wehelp.who)} / ${escapeHtml(t.wehelp.problem)} / ${escapeHtml(t.wehelp.by)}</div>
+          <div><b>Pivot:</b> ${escapeHtml(t.pivot)}</div>
+          <div><b>Blue Move:</b> ${escapeHtml(t.blueMove)}</div>
+        </div>
+      `).join("");
+      document.getElementById("subs").innerHTML = cards || "—";
+    }
+
+    function escapeHtml(s){
+      return (s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+  </script>
+</body>
+</html>

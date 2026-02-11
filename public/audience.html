@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Audience Voting</title>
+  <style>
+    body{font-family:system-ui;margin:16px;max-width:860px}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#f2f2f2;margin-right:6px}
+    .card{border:1px solid #ddd;border-radius:12px;padding:12px;margin:12px 0}
+    select{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:6px}
+    button{padding:10px 12px;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer;margin-top:10px}
+  </style>
+</head>
+<body>
+  <h2>Audience Mode (Customer Jury)</h2>
+  <div id="meta"></div>
+
+  <div class="card">
+    <button onclick="join()">Join Audience</button>
+  </div>
+
+  <div class="card">
+    <h3>Vote (Active Teams Only)</h3>
+    <label>ทีมที่ “แก้ Pain จริง” (❤️ Value)</label>
+    <select id="valueTeam"></select>
+
+    <label>ทีมที่ “ต่างจริง” (💡 Differentiation)</label>
+    <select id="diffTeam"></select>
+
+    <label>ทีมที่ “เหมือนตลาด/แดง” (⚔️ Red Ocean)</label>
+    <select id="redTeam"></select>
+
+    <button onclick="vote()">Submit Vote</button>
+    <div id="hint" style="margin-top:8px;color:#555"></div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let STATE = null;
+
+    socket.on("state", (s) => {
+      STATE = s;
+      document.getElementById("meta").innerHTML =
+        `<span class="pill">Round: ${s.currentRound}</span>
+         <span class="pill">Active: ${s.activeTeams.join(", ")}</span>
+         <span class="pill">Phase: ${s.phase}</span>
+         <span class="pill">Event: ${s.eventText || "-"}</span>`;
+      renderOptions();
+    });
+
+    socket.on("joinedAudience", () => {
+      document.getElementById("hint").textContent = "Joined ✅ โหวตได้แล้ว";
+    });
+
+    function join(){ socket.emit("joinAudience"); }
+
+    function renderOptions(){
+      if (!STATE) return;
+      const active = new Set(STATE.activeTeams);
+      const teams = STATE.teams.filter(t=>active.has(t.id));
+      const opts = teams.map(t => `<option value="${t.id}">${t.name} (#${t.id})</option>`).join("");
+      document.getElementById("valueTeam").innerHTML = opts;
+      document.getElementById("diffTeam").innerHTML = opts;
+      document.getElementById("redTeam").innerHTML = opts;
+    }
+
+    function vote(){
+      socket.emit("vote", {
+        valueTeam: Number(document.getElementById("valueTeam").value),
+        diffTeam: Number(document.getElementById("diffTeam").value),
+        redOceanTeam: Number(document.getElementById("redTeam").value),
+      });
+      document.getElementById("hint").textContent = "โหวตแล้ว ✅ คะแนนจะขึ้นบนจอ";
+    }
+  </script>
+</body>
+</html>

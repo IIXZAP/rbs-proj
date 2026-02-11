@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Team</title>
+  <style>
+    body{font-family:system-ui;margin:16px;max-width:860px}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#f2f2f2;margin-right:6px}
+    .card{border:1px solid #ddd;border-radius:12px;padding:12px;margin:12px 0}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:6px}
+    button{padding:10px 12px;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer;margin-top:8px}
+    .small{font-size:12px;color:#555}
+  </style>
+</head>
+<body>
+  <h2>Team Screen</h2>
+  <div id="meta"></div>
+
+  <div class="card">
+    <h3>Join</h3>
+    <label>Team ID (1–12)</label>
+    <input id="teamId" type="number" min="1" max="12" value="1"/>
+    <label>Team Name</label>
+    <input id="teamName" placeholder="เช่น Blue Tigers"/>
+    <button onclick="join()">Join</button>
+    <div class="small">เข้าทีมแล้วทำตาม Phase ที่อาจารย์เปิด</div>
+  </div>
+
+  <div class="card">
+    <h3>Phase A — Customer & Pain</h3>
+    <label>Customer</label>
+    <input id="customer" placeholder="เช่น คนทำงานรีบตอนเช้า"/>
+    <label>Pain Point</label>
+    <textarea id="pain" rows="2" placeholder="ปัญหาหลัก..."></textarea>
+    <button onclick="submitA()">Submit A</button>
+  </div>
+
+  <div class="card">
+    <h3>Phase B — We help statement</h3>
+    <label>We help (ลูกค้า)</label>
+    <input id="who" />
+    <label>solve (ปัญหา)</label>
+    <input id="problem" />
+    <label>by (วิธีแก้/สิ่งที่เสนอ)</label>
+    <input id="by" />
+    <button onclick="submitB()">Submit B</button>
+  </div>
+
+  <div class="card">
+    <h3>Phase C — Pivot (ตอบตาม Event)</h3>
+    <label>Pivot (ปรับอะไร/เพราะอะไร) 1 บรรทัด</label>
+    <input id="pivot" />
+    <button onclick="submitC()">Submit C</button>
+  </div>
+
+  <div class="card">
+    <h3>Phase D — Blue Ocean Move</h3>
+    <label>เลือก 1</label>
+    <select id="blueMove">
+      <option>Eliminate</option>
+      <option>Reduce</option>
+      <option>Raise</option>
+      <option>Create</option>
+    </select>
+    <button onclick="submitD()">Submit D</button>
+  </div>
+
+  <div class="card">
+    <h3>Your Score</h3>
+    <div id="score">—</div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let myTeamId = null;
+    let STATE = null;
+
+    socket.on("state", (s) => {
+      STATE = s;
+      document.getElementById("meta").innerHTML =
+        `<span class="pill">Round: ${s.currentRound}</span>
+         <span class="pill">Active: ${s.activeTeams.join(", ")}</span>
+         <span class="pill">Phase: ${s.phase}</span>
+         <span class="pill">Event: ${s.eventText || "-"}</span>`;
+      if (myTeamId) {
+        const t = s.teams.find(x => x.id === myTeamId);
+        if (t) document.getElementById("score").innerHTML = `❤️ ${t.value} | ⚔️ ${t.competition} | 💡 ${t.diff}`;
+      }
+    });
+
+    socket.on("joined", ({ teamId, name }) => {
+      myTeamId = teamId;
+      alert(`Joined: ${name} (#${teamId})`);
+    });
+
+    function join(){
+      socket.emit("joinTeam", {
+        teamId: Number(document.getElementById("teamId").value),
+        teamName: document.getElementById("teamName").value
+      });
+    }
+    function submitA(){
+      socket.emit("submitPhaseA", {
+        customer: document.getElementById("customer").value,
+        pain: document.getElementById("pain").value,
+      });
+    }
+    function submitB(){
+      socket.emit("submitPhaseB", {
+        who: document.getElementById("who").value,
+        problem: document.getElementById("problem").value,
+        by: document.getElementById("by").value,
+      });
+    }
+    function submitC(){
+      socket.emit("submitPhaseC", { pivot: document.getElementById("pivot").value });
+    }
+    function submitD(){
+      socket.emit("submitPhaseD", { blueMove: document.getElementById("blueMove").value });
+    }
+  </script>
+</body>
+</html>
