@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
 
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
 app.get("/facilitator", (_, res) => res.sendFile(__dirname + "/public/facilitator.html"));
 app.get("/team", (_, res) => res.sendFile(__dirname + "/public/team.html"));
 app.get("/audience", (_, res) => res.sendFile(__dirname + "/public/audience.html"));
@@ -248,4 +251,7 @@ io.on("connection", (socket) => {
 });
 
 // server.listen(3000, () => console.log("Game running on http://localhost:3000/facilitator"));
-server.listen(PORT, () => console.log("Game running on port", PORT));
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Game running on port ${PORT}`);
+});
+
