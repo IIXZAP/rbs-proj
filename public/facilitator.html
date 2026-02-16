@@ -30,6 +30,7 @@
           <button onclick="draw('customer')" class="px-2.5 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer m-1">🎴 Random Customer/Pain</button>
           <button onclick="draw('event')" class="px-2.5 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer m-1">⚡ Draw Event</button>
           <button onclick="nextRound()" class="px-2.5 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer m-1">➡️ Next Round</button>
+          <button onclick="resetGame()" class="px-2.5 py-2 rounded-lg border border-red-300 bg-red-50 cursor-pointer m-1">🔄 Reset All</button>
         </div>
       </div>
 
@@ -90,6 +91,11 @@
       }
       function draw(type) {
         socket.emit("facilitator:drawRandom", { type });
+      }
+      function resetGame() {
+        if (confirm("Are you sure you want to reset the entire game? This will clear all data.")) {
+          socket.emit("facilitator:resetGame");
+        }
       }
       function adjust() {
         socket.emit("facilitator:adjustScore", {
