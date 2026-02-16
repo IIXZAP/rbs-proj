@@ -106,6 +106,29 @@ function getPublicState() {
   };
 }
 
+function resetGameState() {
+  state.currentRound = 1;
+  state.phase = "A";
+  state.eventText = "";
+  setActiveTeamsByRound(1);
+  state.teams.forEach((t) => {
+    t.value = 0;
+    t.competition = 0;
+    t.diff = 0;
+    t.customer = "";
+    t.pain = "";
+    t.wehelp = { who: "", problem: "", by: "" };
+    t.pivot = "";
+    t.blueMove = "";
+    t.lastUpdateAt = null;
+  });
+  state.audienceVotes = {
+    valueTeam: null,
+    diffTeam: null,
+    redOceanTeam: null,
+  };
+}
+
 function applyBlueMove(team, move) {
   // Simple scoring rules (MVP):
   // Eliminate/Reduce => competition -1, value +1
@@ -246,6 +269,11 @@ io.on("connection", (socket) => {
     t.value += Number(deltaValue || 0);
     t.competition = Math.max(0, t.competition + Number(deltaComp || 0));
     t.diff += Number(deltaDiff || 0);
+    io.emit("state", getPublicState());
+  });
+
+  socket.on("facilitator:resetGame", () => {
+    resetGameState();
     io.emit("state", getPublicState());
   });
 });
