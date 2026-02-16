@@ -253,5 +253,8 @@ io.on("connection", (socket) => {
 // server.listen(3000, () => console.log("Game running on http://localhost:3000/facilitator"));
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`Game running on port ${PORT}`);
+  console.log("PORT from env:", process.env.PORT);
+  console.log("Listening on:", PORT, "interface: 0.0.0.0");
 });
+
 
