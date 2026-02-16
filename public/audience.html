@@ -3,38 +3,34 @@
 <head>
   <meta charset="utf-8" />
   <title>Audience Voting</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body{font-family:system-ui;margin:16px;max-width:860px}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#f2f2f2;margin-right:6px}
-    .card{border:1px solid #ddd;border-radius:12px;padding:12px;margin:12px 0}
-    select{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:6px}
-    button{padding:10px 12px;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer;margin-top:10px}
   </style>
 </head>
-<body>
-  <div style="margin-bottom: 16px;">
-    <button onclick="window.history.back()" style="padding: 8px 12px; border-radius: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">← Back</button>
+<body class="font-sans m-4 max-w-4xl">
+  <div class="mb-4">
+    <button onclick="window.history.back()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer">← Back</button>
   </div>
-  <h2>Audience Mode (Customer Jury)</h2>
+  <h2 class="text-2xl font-bold mb-4">Audience Mode (Customer Jury)</h2>
   <div id="meta"></div>
 
-  <div class="card">
-    <button onclick="join()">Join Audience</button>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <button onclick="join()" class="px-3 py-2.5 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2.5">Join Audience</button>
   </div>
 
-  <div class="card">
-    <h3>Vote (Active Teams Only)</h3>
-    <label>ทีมที่ “แก้ Pain จริง” (❤️ Value)</label>
-    <select id="valueTeam"></select>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Vote (Active Teams Only)</h3>
+    <label class="block mt-1.5">ทีมที่ "แก้ Pain จริง" ( Value)</label>
+    <select id="valueTeam" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"></select>
 
-    <label>ทีมที่ “ต่างจริง” (💡 Differentiation)</label>
-    <select id="diffTeam"></select>
+    <label class="block mt-1.5">ทีมที่ "ต่างจริง" ( Differentiation)</label>
+    <select id="diffTeam" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"></select>
 
-    <label>ทีมที่ “เหมือนตลาด/แดง” (⚔️ Red Ocean)</label>
-    <select id="redTeam"></select>
+    <label class="block mt-1.5">ทีมที่ "เหมือนตลาด/แดง" ( Red Ocean)</label>
+    <select id="redTeam" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"></select>
 
-    <button onclick="vote()">Submit Vote</button>
-    <div id="hint" style="margin-top:8px;color:#555"></div>
+    <button onclick="vote()" class="px-3 py-2.5 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2.5">Submit Vote</button>
+    <div id="hint" class="mt-2 text-gray-600"></div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -45,10 +41,10 @@
     socket.on("state", (s) => {
       STATE = s;
       document.getElementById("meta").innerHTML =
-        `<span class="pill">Round: ${s.currentRound}</span>
-         <span class="pill">Active: ${s.activeTeams.join(", ")}</span>
-         <span class="pill">Phase: ${s.phase}</span>
-         <span class="pill">Event: ${s.eventText || "-"}</span>`;
+        `<span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Round: ${s.currentRound}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Active: ${s.activeTeams.join(", ")}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Phase: ${s.phase}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Event: ${s.eventText || "-"}</span>`;
       renderOptions();
     });
 

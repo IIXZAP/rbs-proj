@@ -3,73 +3,68 @@
 <head>
   <meta charset="utf-8" />
   <title>Team</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body{font-family:system-ui;margin:16px;max-width:860px}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#f2f2f2;margin-right:6px}
-    .card{border:1px solid #ddd;border-radius:12px;padding:12px;margin:12px 0}
-    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #ccc;margin-top:6px}
-    button{padding:10px 12px;border-radius:10px;border:1px solid #ccc;background:#fff;cursor:pointer;margin-top:8px}
-    .small{font-size:12px;color:#555}
   </style>
 </head>
-<body>
-  <div style="margin-bottom: 16px;">
-    <button onclick="window.history.back()" style="padding: 8px 12px; border-radius: 10px; border: 1px solid #ccc; background: #fff; cursor: pointer;">← Back</button>
+<body class="font-sans m-4 max-w-4xl">
+  <div class="mb-4">
+    <button onclick="window.history.back()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer">← Back</button>
   </div>
-  <h2>Team Screen</h2>
+  <h2 class="text-2xl font-bold mb-4">Team Screen</h2>
   <div id="meta"></div>
 
-  <div class="card">
-    <h3>Join</h3>
-    <label>Team ID (1–12)</label>
-    <input id="teamId" type="number" min="1" max="12" value="1"/>
-    <label>Team Name</label>
-    <input id="teamName" placeholder="เช่น Blue Tigers"/>
-    <button onclick="join()">Join</button>
-    <div class="small">เข้าทีมแล้วทำตาม Phase ที่อาจารย์เปิด</div>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Join</h3>
+    <label class="block mt-1.5">Team ID (1–12)</label>
+    <input id="teamId" type="number" min="1" max="12" value="1" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"/>
+    <label class="block mt-1.5">Team Name</label>
+    <input id="teamName" placeholder="เช่น Blue Tigers" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"/>
+    <button onclick="join()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2">Join</button>
+    <div class="text-xs text-gray-600 mt-2">เข้าทีมแล้วทำตาม Phase ที่อาจารย์เปิด</div>
   </div>
 
-  <div class="card">
-    <h3>Phase A — Customer & Pain</h3>
-    <label>Customer</label>
-    <input id="customer" placeholder="เช่น คนทำงานรีบตอนเช้า"/>
-    <label>Pain Point</label>
-    <textarea id="pain" rows="2" placeholder="ปัญหาหลัก..."></textarea>
-    <button onclick="submitA()">Submit A</button>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Phase A — Customer & Pain</h3>
+    <label class="block mt-1.5">Customer</label>
+    <input id="customer" placeholder="เช่น คนทำงานรีบตอนเช้า" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"/>
+    <label class="block mt-1.5">Pain Point</label>
+    <textarea id="pain" rows="2" placeholder="ปัญหาหลัก..." class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5"></textarea>
+    <button onclick="submitA()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2">Submit A</button>
   </div>
 
-  <div class="card">
-    <h3>Phase B — We help statement</h3>
-    <label>We help (ลูกค้า)</label>
-    <input id="who" />
-    <label>solve (ปัญหา)</label>
-    <input id="problem" />
-    <label>by (วิธีแก้/สิ่งที่เสนอ)</label>
-    <input id="by" />
-    <button onclick="submitB()">Submit B</button>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Phase B — We help statement</h3>
+    <label class="block mt-1.5">We help (ลูกค้า)</label>
+    <input id="who" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5" />
+    <label class="block mt-1.5">solve (ปัญหา)</label>
+    <input id="problem" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5" />
+    <label class="block mt-1.5">by (วิธีแก้/สิ่งที่เสนอ)</label>
+    <input id="by" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5" />
+    <button onclick="submitB()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2">Submit B</button>
   </div>
 
-  <div class="card">
-    <h3>Phase C — Pivot (ตอบตาม Event)</h3>
-    <label>Pivot (ปรับอะไร/เพราะอะไร) 1 บรรทัด</label>
-    <input id="pivot" />
-    <button onclick="submitC()">Submit C</button>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Phase C — Pivot (ตอบตาม Event)</h3>
+    <label class="block mt-1.5">Pivot (ปรับอะไร/เพราะอะไร) 1 บรรทัด</label>
+    <input id="pivot" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5" />
+    <button onclick="submitC()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2">Submit C</button>
   </div>
 
-  <div class="card">
-    <h3>Phase D — Blue Ocean Move</h3>
-    <label>เลือก 1</label>
-    <select id="blueMove">
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Phase D — Blue Ocean Move</h3>
+    <label class="block mt-1.5">เลือก 1</label>
+    <select id="blueMove" class="w-full px-2.5 py-2.5 rounded-lg border border-gray-300 mt-1.5">
       <option>Eliminate</option>
       <option>Reduce</option>
       <option>Raise</option>
       <option>Create</option>
     </select>
-    <button onclick="submitD()">Submit D</button>
+    <button onclick="submitD()" class="px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-pointer mt-2">Submit D</button>
   </div>
 
-  <div class="card">
-    <h3>Your Score</h3>
+  <div class="border border-gray-300 rounded-xl p-3 my-3">
+    <h3 class="m-0 mb-2">Your Score</h3>
     <div id="score">—</div>
   </div>
 
@@ -82,10 +77,10 @@
     socket.on("state", (s) => {
       STATE = s;
       document.getElementById("meta").innerHTML =
-        `<span class="pill">Round: ${s.currentRound}</span>
-         <span class="pill">Active: ${s.activeTeams.join(", ")}</span>
-         <span class="pill">Phase: ${s.phase}</span>
-         <span class="pill">Event: ${s.eventText || "-"}</span>`;
+        `<span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Round: ${s.currentRound}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Active: ${s.activeTeams.join(", ")}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Phase: ${s.phase}</span>
+         <span class="inline-block px-2.5 py-1 rounded-full bg-gray-100 mr-1.5">Event: ${s.eventText || "-"}</span>`;
       if (myTeamId) {
         const t = s.teams.find(x => x.id === myTeamId);
         if (t) document.getElementById("score").innerHTML = `❤️ ${t.value} | ⚔️ ${t.competition} | 💡 ${t.diff}`;
